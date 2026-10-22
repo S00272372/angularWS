@@ -1,1 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+app-cars {
+  display: block;
+  padding: 2rem;
+}
+
+h2 {
+  margin-bottom: 1rem;
+}
