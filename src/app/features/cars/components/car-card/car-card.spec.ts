@@ -10,15 +10,12 @@ describe('CarCard', () => {
       imports: [CarCard],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CarCard, {
-      inputs: {
-        car: {
-          _id: '1',
-          make: 'Toyota',
-          model: 'Corolla',
-          year: 2022,
-        },
-      },
+   fixture = TestBed.createComponent(CarCard);
+    fixture.componentRef.setInput('car', {
+      _id: '1',
+      make: 'Toyota',
+      model: 'Corolla',
+      year: 2022,
     });
 
     fixture.detectChanges();
