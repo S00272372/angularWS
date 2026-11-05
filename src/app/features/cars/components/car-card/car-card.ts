@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CarModel } from '../../models/car.model';
+import { Car } from '../../models/car.model';
 
 @Component({
   selector: 'app-car-card',
@@ -10,5 +10,5 @@ import { CarModel } from '../../models/car.model';
   styleUrl: './car-card.scss',
 })
 export class CarCard {
-  car = input.required<CarModel>();
+  car = input.required<Car>();
 }

@@ -1,5 +1,5 @@
 import { Component, inject, input, signal } from '@angular/core';
-import { CarModel } from '../../models/car.model';
+import { Car } from '../../models/car.model';
 import { CarService } from '../../services/car.service';
 
 @Component({
@@ -12,7 +12,7 @@ export class CarDetails {
   private carService = inject(CarService);
 
   readonly id = input.required<string>();
-  readonly car = signal<CarModel | null>(null);
+  readonly car = signal<Car | null>(null);
 
   ngOnInit(): void {
     this.carService.getCarById(this.id()).subscribe((car) => {

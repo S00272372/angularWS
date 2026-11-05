@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CarModel } from '../../models/car.model';
+import { CreateCarDto } from '../../models/car.model';
 import { CarService } from '../../services/car.service';
 
 @Component({
@@ -16,25 +16,25 @@ export class CarForm {
   private carService = inject(CarService);
   private router = inject(Router);
 
-  carForm = this.formBuilder.group({
+  carForm = this.formBuilder.nonNullable.group({
     make: ['', Validators.required],
     model: ['', Validators.required],
-    year: [''],
+    year: this.formBuilder.control<number|null>(null)
   });
 
   onSubmit(): void {
-    const carData = this.carForm.value as CarModel;
+    const { make, model, year } = this.carForm.getRawValue();
+    const newCar: CreateCarDto = { make, model, year: year ?? undefined };
 
-    console.log('Submitted Car:', carData);
-
-    this.carService.addCar(carData).subscribe({
+    console.log('Submitted Car:', newCar);
+    this.carService.addCar(newCar).subscribe({
       next: (response) => {
         console.log('Car added successfully:', response);
         this.router.navigate(['/cars']);
       },
       error: (error) => {
         console.error('Error adding car:', error);
-      },
+      }
     });
   }
 }

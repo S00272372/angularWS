@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { CarCard } from '../../components/car-card/car-card';
-import { CarModel } from '../../models/car.model';
+import { Car } from '../../models/car.model';
 import { CarService } from '../../services/car.service';
 
 @Component({
@@ -16,10 +16,9 @@ import { CarService } from '../../services/car.service';
 export class CarList implements OnInit {
   private carService = inject(CarService);
 
-  cars$!: Observable<CarModel[]>;
+  cars$!: Observable<Car[]>;
 
   ngOnInit(): void {
     this.cars$ = this.carService.getCars();
   }
 }
-

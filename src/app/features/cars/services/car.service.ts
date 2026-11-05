@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, catchError, map, of, throwError } from 'rxjs';
-import { CarModel } from '../models/car.model';
+import { Observable, catchError, throwError } from 'rxjs';
+import { Car, CreateCarDto } from '../models/car.model';
 
 @Injectable({
   providedIn: 'root',
@@ -9,39 +9,20 @@ import { CarModel } from '../models/car.model';
 export class CarService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:3000/cars';
-  private fallbackCars: CarModel[] = [
-    { _id: '507f1f77bcf86cd799439011', id: 1, make: 'Ford', model: 'Focus', year: 2021 },
-    { _id: '507f1f77bcf86cd799439012', id: 2, make: 'Toyota', model: 'Corolla', year: 2023 },
-    { _id: '507f1f77bcf86cd799439013', id: 3, make: 'Honda', model: 'Civic', year: 2022 },
-  ];
 
-  getCars(): Observable<CarModel[]> {
-    return this.http.get<CarModel[]>(this.apiUrl).pipe(
-      map((cars) => (cars && cars.length ? cars : this.fallbackCars)),
-      catchError(() => of(this.fallbackCars)),
-    );
+  getCars(): Observable<Car[]> {
+    return this.http.get<Car[]>(this.apiUrl);
   }
 
-  getCarById(id: string): Observable<CarModel> {
-    return this.http.get<CarModel>(`${this.apiUrl}/${id}`).pipe(
-      catchError(() =>
-        of(
-          this.fallbackCars.find(
-            (car) => car._id === id || String(car.id) === id,
-          ) ?? {
-            _id: id,
-            make: 'Unknown',
-            model: 'Unknown',
-          },
-        ),
-      ),
-    );
+  getCarById(id: string): Observable<Car> {
+    return this.http.get<Car>(`${this.apiUrl}/${id}`);
   }
 
-  addCar(car: CarModel): Observable<CarModel> {
-    return this.http.post<CarModel>(this.apiUrl, car).pipe(
-      catchError(this.handleError),
-    );
+  addCar(car: CreateCarDto): Observable<Car> {
+    return this.http.post<Car>(this.apiUrl, car)
+    .pipe(
+      catchError(this.handleError)
+    )
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {

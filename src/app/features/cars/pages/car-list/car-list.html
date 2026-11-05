@@ -4,7 +4,7 @@
 
 @if (cars$ | async; as cars) {
   <div class="grid">
-    @for (car of cars; track car._id ?? car.id) {
+     @for (car of cars; track car._id) {
       <app-car-card [car]="car" />
     }
   </div>

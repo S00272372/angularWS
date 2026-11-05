@@ -13,7 +13,7 @@ describe('CarCard', () => {
     fixture = TestBed.createComponent(CarCard, {
       inputs: {
         car: {
-          id: '1',
+          _id: '1',
           make: 'Toyota',
           model: 'Corolla',
           year: 2022,
