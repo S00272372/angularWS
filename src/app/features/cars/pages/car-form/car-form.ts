@@ -1,13 +1,27 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CreateCarDto } from '../../models/car.model';
 import { CarService } from '../../services/car.service';
 
 @Component({
   selector: 'app-car-form',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatProgressBarModule,
+  ],
   templateUrl: './car-form.html',
   styleUrl: './car-form.scss',
 })
@@ -15,14 +29,17 @@ export class CarForm {
   private formBuilder = inject(FormBuilder);
   private carService = inject(CarService);
   private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
   saving = signal(false);
   saveError = signal<string | null>(null);
 
+  readonly currentYear = new Date().getFullYear();
+
   carForm = this.formBuilder.nonNullable.group({
-    make: ['', Validators.required],
-    model: ['', Validators.required],
-    year: this.formBuilder.control<number|null>(null)
+    make: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+    model: ['', [Validators.required, Validators.maxLength(30)]],
+    year: this.formBuilder.control<number | null>(null, [Validators.min(1950), Validators.max(this.currentYear + 1),]),
   });
 
   onSubmit(): void {
@@ -31,15 +48,18 @@ export class CarForm {
 
     this.saving.set(true);
     this.saveError.set(null);
+    this.carForm.disable();
 
     this.carService.addCar(newCar).subscribe({
       next: (response) => {
+        this.snackBar.open(`${newCar.make} ${newCar.model} saved`, 'Close', { duration: 10000 });
         console.log('Car added successfully:', response);
         this.router.navigate(['/cars']);
       },
       error: (err: Error) => {
         this.saveError.set(err.message);
         this.saving.set(false);
+        this.carForm.enable();
       },
     });
   }
